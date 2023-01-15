@@ -1,9 +1,13 @@
-const { validatorResult } = require("express-validator");
+const { validationResult } = require("express-validator");
+const user = require("./../models/user");
+
 module.exports = class {
-  constructor() {}
+  constructor() {
+    this.User = user;
+  }
 
   validationBody(req, res) {
-    const result = validatorResult(req);
+    const result = validationResult(req);
     if (!result.isEmpty()) {
       const errors = result.array();
       const messages = [];
@@ -17,12 +21,12 @@ module.exports = class {
     return true;
   }
 
-  validate(req, res, next) {
+  validate = (req, res, next) => {
     if (!this.validationBody(req, res)) {
       return;
     }
     next();
-  }
+  };
 
   response({ res, message, code = 200, data = {} }) {
     res.status(code).json({

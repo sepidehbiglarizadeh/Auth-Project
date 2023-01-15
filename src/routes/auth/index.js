@@ -7,7 +7,7 @@ router.post(
   "/register",
   validator.registerValidator(),
   controller.validate,
-  controller.register
+  controller.register,
 );
 
 router.post(
