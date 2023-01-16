@@ -18,7 +18,24 @@ mongoose
   .then(() => debug("Connected to mongodb"))
   .catch(() => debug("Could not connect"));
 
+process.on("uncaughtException", (ex) => {
+  console.log("uncaught exception");
+  winston.error(ex.message, ex);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (ex) => {
+  console.log("unhandledRejection");
+  winston.error(ex.message, ex);
+  process.exit(1);
+});
+
 winston.add(new transports.File({ filename: "logFile.log" }));
+
+const p = Promise.reject(new Error("something failde outside promise"));
+p.then(() => console.log("done"));
+
+throw new Error("something failed outside");
 
 app.use("/api", router);
 
