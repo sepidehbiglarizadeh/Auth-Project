@@ -18,4 +18,9 @@ const isLoggined = async (req, res, next) => {
   }
 };
 
-module.exports = { isLoggined };
+const isAdmin = async (req, res, next) => {
+  if (!req.user.isAdmin) res.status(403).send("access denied");
+  next();
+};
+
+module.exports = { isLoggined, isAdmin };
