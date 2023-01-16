@@ -30,6 +30,8 @@ module.exports = new (class extends Controller {
   };
 
   login = async (req, res) => {
+    throw new Error("login failed");
+
     //? find user
     const user = await this.User.findOne({ email: req.body.email });
     if (!user) {
