@@ -1,41 +1,11 @@
-require("express-async-errors");
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
-const debug = require("debug")("app:main");
-const config = require("config");
 const router = require("./src/routes");
-const winston = require("winston");
-const { transports } = require("winston");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-mongoose
-  .connect(config.get("db.address"))
-  .then(() => debug("Connected to mongodb"))
-  .catch(() => debug("Could not connect"));
-
-process.on("uncaughtException", (ex) => {
-  console.log("uncaught exception");
-  winston.error(ex.message, ex);
-  process.exit(1);
-});
-
-process.on("unhandledRejection", (ex) => {
-  console.log("unhandledRejection");
-  winston.error(ex.message, ex);
-  process.exit(1);
-});
-
-winston.add(new transports.File({ filename: "logFile.log" }));
-
-const p = Promise.reject(new Error("something failde outside promise"));
-p.then(() => console.log("done"));
-
-throw new Error("something failed outside");
+require("./startup/config")(app, express);
+require("./startup/db")();
+require("./startup/logging");
 
 app.use("/api", router);
 
